@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "LightingIllusion\\": "LightingIllusion/"
+            "klyp\\LightingIllusion\\": "src/"
         }
     }
 }
