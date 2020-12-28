@@ -1,6 +1,6 @@
 {
     "name": "klyp/retailexpress",
-    "description": "This will create a queue job for reatail express APIs",
+    "description": "This will create a queue job for retail express APIs",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -11,7 +11,9 @@
     ],
     
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "laravel/framework": "9999999-dev"
+    },
     "autoload": {
         "psr-4": {
             "LightningIllusion\\RetailExpress\\": "src/"
