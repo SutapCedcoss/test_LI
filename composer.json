@@ -1,5 +1,5 @@
 {
-    "name": "klyp/lighting-illusion",
+    "name": "klyp/lightingillusion",
     "description": "This will create a queue job for retail express APIs",
     "type": "library",
     "license": "MIT",
@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "LightingIllusion\\": "src/LightingIllusion"
+            "LightingIllusion\\": "/LightingIllusion"
         }
     }
 }
