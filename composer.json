@@ -12,7 +12,9 @@
     
     "minimum-stability": "dev",
     "require": {
-        "laravel/framework": "9999999-dev"
+        "laravel/framework": "9999999-dev",
+        "spatie/array-to-xml": "^2.16",
+        "ext-soap": "*"
     },
     "autoload": {
         "psr-4": {
