@@ -1,6 +1,6 @@
 <?php
 
-namespace Models;
+namespace klyp\LightingIllusion\Models;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
