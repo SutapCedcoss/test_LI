@@ -47,9 +47,7 @@ class CreateCustomer implements ShouldQueue
             ],
         ];
 
-        $response =  (new RetailExpressClient())
+        return (new RetailExpressClient())
             ->customerCreateUpdate($customerData);
-        dd($response);
-        // return $new;
     }
 }
