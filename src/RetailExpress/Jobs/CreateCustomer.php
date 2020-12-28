@@ -1,6 +1,6 @@
 <?php
 
-namespace LightingIllusion\RetailExpess\Jobs;
+namespace klyp\LightingIllusion\RetailExpess\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
