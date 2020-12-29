@@ -1,61 +1,28 @@
 <?php
 
-namespace klyp\LightingIllusion\RetailExpress\Jobs;
+namespace klyp\LightingIllusion\SoapClient;
 
-use klyp\LightingIllusion\SoapClient\RetailExpressClient;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-
-class CreateCustomer implements ShouldQueue
+class RetailExpressClient
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    public const WSDL_FILE = 'RetailExpressWsdl.xml';
 
-    public function __construct(public $customer, public $data)
+    public BaseSoapClient $client;
+
+    public function __construct()
     {
+        $this->client = new BaseSoapClient(base_path('/resources/assets/RetailExpress/') . self::WSDL_FILE);
     }
 
-    public function handle()
+    public function customerCreateUpdate(array $customerData)
     {
-        $customerData = [
-            'Customer' => [
-                'BillEmail' => $this->data->email,
-                'BillFirstName' => $this->data->firstName,
-                'BillLastName' => $this->data->lastName,
-                'DelAddress' => $this->data->shippingAddress['addressLine1'],
-                'DelAddress2' => $this->data->shippingAddress['addressLine2'],
-               // 'DelCountry' => $this->data->shippingAddress['country'],
-                'DelMobile' => $this->data->phone,
-                'DelPostCode' => $this->data->shippingAddress['postcode'],
-                'DelState' => $this->data->shippingAddress['state'],
-                'DelSuburb' => $this->data->shippingAddress['suburb'],
-                'BillAddress' => $this->data->billingAddress['addressLine1'],
-                'BillAddress2' => $this->data->billingAddress['addressLine2'],
-               // 'BillCountry' => $this->data->billingAddress['country'],
-                'BillMobile' => $this->data->phone,
-                'BillPostCode' => $this->data->billingAddress['postcode'],
-                'BillState' => $this->data->billingAddress['state'],
-                'BillSuburb' => $this->data->billingAddress['suburb'],
-                'Password' => $this->data->password,
-                'ReceivesNews' => 0,
-            ],
-        ];
+        $this->client->setBody($this->client->convertXmlData($customerData, 'Customers'), 'CustomerXML');
 
-        $response =  (new RetailExpressClient())
-            ->customerCreateUpdate($customerData);
-
-        $response = json_decode(
-            json_encode(
-                simplexml_load_string(
-                    $response->CustomerCreateUpdateResult->any
-                )
-            ),
-            true
-        );
+        try {
+            return $this->client->call('CustomerCreateUpdate');
+        } catch (\Exception $e) {
+            var_dump($e->getMessage());
+            print_r($client->__getLastRequest());
+            print_r($client->__getLastRequestHeaders());
+        }
     }
 }

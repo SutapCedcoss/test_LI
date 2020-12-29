@@ -16,38 +16,49 @@ class CreateCustomer implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public function __construct()
+    public function __construct(public $customer, public $data)
     {
     }
 
-
-    public function handle($customer, $data)
+    public function handle()
     {
         $customerData = [
             'Customer' => [
-                'BillEmail' => $data->email,
-                'BillFirstName' => $data->firstName,
-                'BillLastName' => $data->lastName,
-                'DelAddress' => $data->shipping_address['addressLine1'],
-                'DelAddress2' => $data->shipping_address['addressLine2'],
-                'DelCountry' => $data->shipping_address['country'],
-                'DelMobile' => $data['phone'],
-                'DelPostCode' => $data->shipping_address['postcode'],
-                'DelState' => $data->shipping_address['state'],
-                'DelSuburb' => $data->shipping_address['suburb'],
-                'BillAddress' => $data->billing_address['addressLine1'],
-                'BillAddress2' => $data->billing_address['addressLine2'],
-                'BillCountry' => $data->billing_address['country'],
-                'BillMobile' => $data['phone'],
-                'BillPostCode' => $data->billing_address['postcode'],
-                'BillState' => $data->billing_address['state'],
-                'BillSuburb' => $data->billing_address['suburbBill'],
-                'Password' => $data->password,
+                'BillEmail' => $this->data->email,
+                'BillFirstName' => $this->data->firstName,
+                'BillLastName' => $this->data->lastName,
+                'DelAddress' => $this->data->shippingAddress['addressLine1'],
+                'DelAddress2' => $this->data->shippingAddress['addressLine2'],
+               // 'DelCountry' => $this->data->shippingAddress['country'],
+                'DelMobile' => $this->data->phone,
+                'DelPostCode' => $this->data->shippingAddress['postcode'],
+                'DelState' => $this->data->shippingAddress['state'],
+                'DelSuburb' => $this->data->shippingAddress['suburb'],
+                'BillAddress' => $this->data->billingAddress['addressLine1'],
+                'BillAddress2' => $this->data->billingAddress['addressLine2'],
+               // 'BillCountry' => $this->data->billingAddress['country'],
+                'BillMobile' => $this->data->phone,
+                'BillPostCode' => $this->data->billingAddress['postcode'],
+                'BillState' => $this->data->billingAddress['state'],
+                'BillSuburb' => $this->data->billingAddress['suburb'],
+                'Password' => $this->data->password,
                 'ReceivesNews' => 0,
             ],
         ];
 
-        return (new RetailExpressClient())
+        $response =  (new RetailExpressClient())
             ->customerCreateUpdate($customerData);
+
+        $response = json_decode(
+            json_encode(
+                simplexml_load_string(
+                    $response->CustomerCreateUpdateResult->any
+                )
+            ),
+            true
+        );
+
+        dd($response);
+        // return $new;
     }
 }
