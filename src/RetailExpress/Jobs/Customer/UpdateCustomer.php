@@ -1,6 +1,6 @@
 <?php
 
-namespace klyp\LightingIllusion\RetailExpress\Jobs;
+namespace klyp\LightingIllusion\RetailExpress\Jobs\Customer;
 
 use klyp\LightingIllusion\SoapClient\RetailExpressClient;
 use Illuminate\Bus\Queueable;
@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class CreateCustomer implements ShouldQueue
+class UpdateCustomer implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -24,19 +24,20 @@ class CreateCustomer implements ShouldQueue
     {
         $customerData = [
             'Customer' => [
+                'CustomerId' => $this->data->rx_id,
                 'BillEmail' => $this->data->email,
                 'BillFirstName' => $this->data->firstName,
                 'BillLastName' => $this->data->lastName,
                 'DelAddress' => $this->data->shippingAddress['addressLine1'],
                 'DelAddress2' => $this->data->shippingAddress['addressLine2'],
-               // 'DelCountry' => $this->data->shippingAddress['country'],
+                'DelCountry' => $this->data->shippingAddress['country'],
                 'DelMobile' => $this->data->phone,
                 'DelPostCode' => $this->data->shippingAddress['postcode'],
                 'DelState' => $this->data->shippingAddress['state'],
                 'DelSuburb' => $this->data->shippingAddress['suburb'],
                 'BillAddress' => $this->data->billingAddress['addressLine1'],
                 'BillAddress2' => $this->data->billingAddress['addressLine2'],
-               // 'BillCountry' => $this->data->billingAddress['country'],
+                'BillCountry' => $this->data->billingAddress['country'],
                 'BillMobile' => $this->data->phone,
                 'BillPostCode' => $this->data->billingAddress['postcode'],
                 'BillState' => $this->data->billingAddress['state'],
@@ -49,16 +50,9 @@ class CreateCustomer implements ShouldQueue
         $response =  (new RetailExpressClient())
             ->customerCreateUpdate($customerData);
 
-        $response = json_decode(
-            json_encode(
-                simplexml_load_string(
-                    $response->CustomerCreateUpdateResult->any
-                )
-            ),
-            true
-        );
-
-        dd($response);
-        // return $new;
+        $response =   json_decode(json_encode(simplexml_load_string($response->CustomerCreateUpdateResult->any)),TRUE);
+//        if($response && $response['Customer']['Result'] === "Success"){
+//            return ['status' => 'Success', 'customerId' => $response['Customer']['CustomerId']];
+//        }
     }
 }
