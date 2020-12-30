@@ -16,42 +16,45 @@ class CreateCustomer implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public function __construct(public $customer, public $data)
+    public function __construct(public $customer)
     {
     }
 
     public function handle()
     {
-        $customerData = [
+        $customercustomer = [
             'Customer' => [
-                'BillEmail' => $this->data->email,
-                'BillFirstName' => $this->data->firstName,
-                'BillLastName' => $this->data->lastName,
-                'DelAddress' => $this->data->shippingAddress['addressLine1'],
-                'DelAddress2' => $this->data->shippingAddress['addressLine2'],
-                'DelCountry' => $this->data->shippingAddress['country'],
-                'DelMobile' => $this->data->phone,
-                'DelPostCode' => $this->data->shippingAddress['postcode'],
-                'DelState' => $this->data->shippingAddress['state'],
-                'DelSuburb' => $this->data->shippingAddress['suburb'],
-                'BillAddress' => $this->data->billingAddress['addressLine1'],
-                'BillAddress2' => $this->data->billingAddress['addressLine2'],
-                'BillCountry' => $this->data->billingAddress['country'],
-                'BillMobile' => $this->data->phone,
-                'BillPostCode' => $this->data->billingAddress['postcode'],
-                'BillState' => $this->data->billingAddress['state'],
-                'BillSuburb' => $this->data->billingAddress['suburb'],
-                'Password' => $this->data->password,
+                //'CustomReference' => $this->customer->liSite['name'],
+                'BillEmail' => $this->customer->email,
+                'BillFirstName' => $this->customer->firstName,
+                'BillLastName' => $this->customer->lastName,
+                'DelAddress' => $this->customer->shippingAddress['addressLine1'],
+                'DelAddress2' => $this->customer->shippingAddress['addressLine2'],
+                'DelCountry' => $this->customer->shippingAddress['country'],
+                'DelMobile' => $this->customer->phone,
+                'DelPostCode' => $this->customer->shippingAddress['postcode'],
+                'DelState' => $this->customer->shippingAddress['state'],
+                'DelSuburb' => $this->customer->shippingAddress['suburb'],
+                'BillAddress' => $this->customer->billingAddress['addressLine1'],
+                'BillAddress2' => $this->customer->billingAddress['addressLine2'],
+                'BillCountry' => $this->customer->billingAddress['country'],
+                'BillMobile' => $this->customer->phone,
+                'BillPostCode' => $this->customer->billingAddress['postcode'],
+                'BillState' => $this->customer->billingAddress['state'],
+                'BillSuburb' => $this->customer->billingAddress['suburb'],
+                'Password' => $this->customer->phone,
+                'ExternalCustomerId' => $this->customer->id,
                 'ReceivesNews' => 0,
             ],
         ];
 
         $response =  (new RetailExpressClient())
-            ->customerCreateUpdate($customerData);
+            ->customerCreateUpdate($customercustomer);
 
-        $response =   json_decode(json_encode(simplexml_load_string($response->CustomerCreateUpdateResult->any)),TRUE);
-//        if($response && $response['Customer']['Result'] === "Success"){
-//            return ['status' => 'Success', 'customerId' => $response['Customer']['CustomerId']];
-//        }
+        $response = json_decode(json_encode(simplexml_load_string($response->CustomerCreateUpdateResult->any)),TRUE);
+
+        if($response && $response['Customer']['Result'] === "Success"){
+           $this->customer->update(['rx_id' => $response['Customer']['CustomerId'] ]);
+        }
     }
 }
