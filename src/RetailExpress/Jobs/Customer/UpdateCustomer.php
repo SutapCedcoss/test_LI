@@ -22,7 +22,6 @@ class UpdateCustomer implements ShouldQueue
 
     public function handle()
     {
-
         $customer = [
             'Customer' => [
                 //  'CustomReference' => $this->customer->liSite['name'],
@@ -52,7 +51,6 @@ class UpdateCustomer implements ShouldQueue
 
 
         $response = (new WebStoreClient())->customerCreateUpdate($customer, 'Customers', 'CustomerXML');
-        dd($response);
 
         json_decode(json_encode(simplexml_load_string($response->CustomerCreateUpdateResult->any)), TRUE);
     }

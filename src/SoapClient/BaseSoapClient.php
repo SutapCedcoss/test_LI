@@ -66,16 +66,6 @@ class BaseSoapClient
         );
     }
 
-    public static function soapify(array $data): SoapVar
-    {
-        foreach ($data as &$value) {
-            if (is_array($value)) {
-                $value = self::soapify($value);
-            }
-        }
-        return new SoapVar($data, SOAP_ENC_OBJECT);
-    }
-
     public function setBody(string $data, string $paramName): void
     {
         $params[] = new \SoapVar(

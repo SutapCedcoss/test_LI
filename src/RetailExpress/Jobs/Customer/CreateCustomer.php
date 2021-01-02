@@ -2,12 +2,12 @@
 
 namespace klyp\LightingIllusion\RetailExpress\Jobs\Customer;
 
-use klyp\LightingIllusion\SoapClient\WebStoreClient;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use klyp\LightingIllusion\SoapClient\WebStoreClient;
 
 class CreateCustomer implements ShouldQueue
 {
@@ -49,12 +49,11 @@ class CreateCustomer implements ShouldQueue
         ];
 
         $response = (new WebStoreClient())->customerCreateUpdate($customer, 'Customers', 'CustomerXML');
-        dd($response);
 
-        $response = json_decode(json_encode(simplexml_load_string($response->CustomerCreateUpdateResult->any)),TRUE);
+        $response = json_decode(json_encode(simplexml_load_string($response->CustomerCreateUpdateResult->any)), TRUE);
 
-        if($response && $response['Customer']['Result'] === "Success"){
-           $this->customer->update(['rx_id' => $response['Customer']['CustomerId'] ]);
+        if ($response && $response['Customer']['Result'] === "Success") {
+            $this->customer->update(['rx_id' => $response['Customer']['CustomerId']]);
         }
     }
 }

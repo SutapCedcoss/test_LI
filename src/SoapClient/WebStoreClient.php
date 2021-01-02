@@ -16,7 +16,7 @@ class WebStoreClient
     public function __construct()
     {
         try {
-            $this->client = new BaseSoapClient(dirname(__DIR__) . 'resources/wsdl/' . self::WSDL_FILE);
+            $this->client = new BaseSoapClient(dirname(__FILE__).'/../resources/wsdl/' . self::WSDL_FILE);
         } catch (\SoapFault $e) {
             throw new \Error($e->getMessage());
         }
@@ -31,8 +31,6 @@ class WebStoreClient
             return $this->client->call($name);
         } catch (\Exception $e) {
             print $e->getMessage();
-            print $this->client->__getLastRequest();
-            print $this->client->__getLastRequestHeaders();
         }
     }
 
