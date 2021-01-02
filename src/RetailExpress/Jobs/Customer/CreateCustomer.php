@@ -2,7 +2,7 @@
 
 namespace klyp\LightingIllusion\RetailExpress\Jobs\Customer;
 
-use klyp\LightingIllusion\SoapClient\RetailExpressClient;
+use klyp\LightingIllusion\SoapClient\WebStoreClient;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -22,7 +22,7 @@ class CreateCustomer implements ShouldQueue
 
     public function handle()
     {
-        $customercustomer = [
+        $customer = [
             'Customer' => [
                 //'CustomReference' => $this->customer->liSite['name'],
                 'BillEmail' => $this->customer->email,
@@ -48,8 +48,8 @@ class CreateCustomer implements ShouldQueue
             ],
         ];
 
-        $response =  (new RetailExpressClient())
-            ->customerCreateUpdate($customercustomer);
+        $response = (new WebStoreClient())->customerCreateUpdate($customer, 'Customers', 'CustomerXML');
+        dd($response);
 
         $response = json_decode(json_encode(simplexml_load_string($response->CustomerCreateUpdateResult->any)),TRUE);
 
